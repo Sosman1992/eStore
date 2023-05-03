@@ -1,0 +1,82 @@
+CREATE DATABASE estore;
+
+USE estore;
+
+CREATE TABLE product (
+    product_id INT PRIMARY KEY,
+    name VARCHAR(255),
+    description VARCHAR(255),
+    manufacturer_name VARCHAR(255),
+    inventory_count INT
+);
+
+
+CREATE TABLE Product (
+    ProductID INT PRIMARY KEY,
+    Name VARCHAR(255),
+    Description TEXT,
+    ManufacturerName VARCHAR(255),
+    InventoryCount INT
+);
+
+
+CREATE TABLE user (
+    user_id INT PRIMARY KEY,
+    username VARCHAR(255),
+    password VARCHAR(255),
+    preferences VARCHAR(20)
+);
+
+
+CREATE TABLE User (
+    UserID INT PRIMARY KEY,
+    UserName VARCHAR(255),
+    UserPassword VARCHAR(255),
+    UserPreferences VARCHAR(20)
+);
+
+CREATE TABLE products_bought (
+    user_id INT,
+    product_id INT,
+    username VARCHAR(255),
+    product_name VARCHAR(255),
+    quantity INT,
+    date_purchased DATE,
+    PRIMARY KEY (user_id, product_id)
+);
+
+
+CREATE TABLE ProductsBought (
+    UserID INT,
+    ProductID INT,
+    UserName VARCHAR(255),
+    ProductName VARCHAR(255),
+    Quantity INT,
+    DateOfPurchase DATE,
+    PRIMARY KEY (UserID, ProductID)
+);
+
+
+
+// fetch data from the database and populate the table
+pool.getConnection()
+  .then(conn => {
+    conn.query('SELECT * FROM product')
+      .then(rows => {
+        const table = document.getElementById('product-table');
+        for (let row of rows) {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `<td>${row.product_id}</td><td>${row.name}</td><td>${row.description}</td><td>${row.manufacturer_name}</td><td>${row.inventory_count}</td>`;
+          table.appendChild(tr);
+        }
+      })
+      .catch(err => {
+        console.log('Error fetching data: ' + err);
+      })
+      .finally(() => {
+        conn.release(); // release the database connection
+      });
+  })
+  .catch(err => {
+    console.log('Error connecting to database: ' + err);
+  });
